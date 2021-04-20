@@ -1,8 +1,14 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.0
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31025.218
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrieAlgorithm", "TrieAlgorithm\TrieAlgorithm.csproj", "{7C62915E-FED3-4FB4-992F-75DDB2CE470A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrieAlgorithm", "TrieAlgorithm\TrieAlgorithm.csproj", "{7C62915E-FED3-4FB4-992F-75DDB2CE470A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02606AB6-4EFB-48E8-A7BE-00490D91DB59}"
+	ProjectSection(SolutionItems) = preProject
+		readme.adoc = readme.adoc
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,5 +23,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EEE9287C-5749-4983-9D4D-0CBA198BE390}
 	EndGlobalSection
 EndGlobal

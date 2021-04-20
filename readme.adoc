@@ -1,0 +1,55 @@
+= Path manipulation
+
+== System vs. User
+
+The PATH variable is made up of all the system paths followed by all the user paths and is ALWAYS this way round.
+It is not possible for a user path to override a system path.
+
+== Duplicates
+
+Duplicates are common. You may find a directory occurring twice on the system path, twice on the user path, or once on each. More than
+two occurrences are possible.
+
+== Operations
+
+We would like the following operations
+
+* Add a directory to the system path at the end 
+* Add a directory to the system path at the start
+* Add a directory to the user path at the end 
+* Add a directory to the user path at the start
+* Delete a directory in the path
+* Increase the priority of a directory in the path
+* Decrease the priority of a directory in the path
+* Move a directory to the top
+* Move a directory to the bottom
+
+== Real filesystem casing
+
+We would like to see the real filesystem case of the directory and be able to change the path variable to contain
+the real filesystem case.
+
+
+== Sha1
+
+A directory is uniquely identified by an abbreviated Sha1Sum. This is the Sha1Sum of the directory followed the letter U 
+for user or S for system.
+
+=== Dealing with duplicates
+
+The easiest way is to delete duplicates and use the first occurrence of the directory (maximum priority).
+
+== System to User and vice versa
+
+We can promote a directory from user to system and demote from system to user. A -f (force) switch is required to confirm this.
+This can be the result of any increase or decrease operation.
+
+== Expanded Environment Variables
+
+== Technical info: the registry
+
+Environment.ExpandEnvironmentVariables
+
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SessionManager\Environment
+
+REG_EXPAND_SZ 

@@ -15,6 +15,7 @@ namespace TrieAlgorithm
         public string Directory { get; set; }
         public string Sha1Sum { get; set; }
         public string Prefix { get; set; }
+        public bool isSystem { get; set; }
     }
     class Program
     {
@@ -22,11 +23,18 @@ namespace TrieAlgorithm
         {
             try
             {
-                var sysPaths = Environment.GetEnvironmentVariable("PATH")
+                var sysPaths = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine)
                     .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(x => new PathDir { Directory = x, Sha1Sum = Sha1SumString(x) });
+                    .Select(x => new PathDir { Directory = x, isSystem = true, Sha1Sum = Sha1SumString($"{x}S") });
 
-                var group = sysPaths.ToLookup(x => x.Directory);
+
+                var userPaths = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User)
+                    .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(x => new PathDir { Directory = x, isSystem = false, Sha1Sum = Sha1SumString($"{x}U") });
+
+                var paths = sysPaths.Concat(userPaths);
+
+                var group = paths.ToLookup(x => x.Directory);
                 foreach (var dup in group.Where(x=>x.Count() > 1))
                 {
                     Console.WriteLine($"Directory {dup.Key} occurs twice in system Path");
@@ -34,12 +42,12 @@ namespace TrieAlgorithm
 
 
                 var t1 = new ShaTrie();
-                var prefixes = t1.GetShortestPrefix(sysPaths.Select(x=>x.Sha1Sum));
-                sysPaths = sysPaths.Zip(prefixes, (a, b) => new PathDir { Directory = a.Directory, Sha1Sum = a.Sha1Sum, Prefix = b });
+                var prefixes = t1.GetShortestPrefix(paths.Select(x=>x.Sha1Sum));
+                paths = paths.Zip(prefixes, (a, b) => new PathDir { Directory = a.Directory, isSystem = a.isSystem, Sha1Sum = a.Sha1Sum, Prefix = b });
 
-                foreach (var p in sysPaths)
+                foreach (var p in paths)
                 {
-                    Console.WriteLine($"{p.Sha1Sum} {p.Prefix} {p.Directory}");
+                    Console.WriteLine($"{p.isSystem} {p.Sha1Sum} {p.Prefix} {p.Directory}");
                 }
             }
             catch (Exception ex)
