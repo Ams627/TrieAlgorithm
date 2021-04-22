@@ -1,5 +1,28 @@
 = Path manipulation
 
+== Registry
+
+Paths that ultimately end up in the PATH environment variable come from the Windows registry in the environment variables
+section.
+
+System paths come from here:
+
+----
+HKLM\SYSTEM\CURRENTCONTROLSET\CONTROL\SESSION MANAGER\ENVIRONMENT
+----
+
+User paths come from here:
+
+----
+HKCU\Environment
+----
+
+Note that normally, the type of registry value used by the PATH environment setting is `REG_EXPAND_SZ`. This means
+that when we call `Environment.GetEnvironmentVariable`, any contained references to other environment variables
+(e.g. `%SystemRoot%`) are expanded. If you wish to obtain the unexpanded value of a variable, you need to 
+read the registry directly using `RegistryKey.GetValue` with `RegistryValueOptions.DoNotExpandEnvironmentNames`.
+
+
 == System vs. User
 
 The PATH variable is made up of all the system paths followed by all the user paths and is ALWAYS this way round.
@@ -8,7 +31,7 @@ It is not possible for a user path to override a system path.
 == Duplicates
 
 Duplicates are common. You may find a directory occurring twice on the system path, twice on the user path, or once on each. More than
-two occurrences are possible.
+two occurrences are possible.z
 
 == Operations
 

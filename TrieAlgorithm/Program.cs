@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
+using Microsoft.Win32;
 
 namespace TrieAlgorithm
 {
@@ -23,12 +24,22 @@ namespace TrieAlgorithm
         {
             try
             {
-                var sysPaths = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine)
+                var sysPaths0 = RegLib.GetValues(@"HKLM\SYSTEM\CURRENTCONTROLSET\CONTROL\SESSION MANAGER\ENVIRONMENT",
+                    RegistryView.Registry64,
+                    RegistryValueOptions.DoNotExpandEnvironmentNames)
+                    .Where(x => x.key.Equals("Path", StringComparison.OrdinalIgnoreCase)).First().value;
+
+                var sysPaths = sysPaths0
                     .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(x => new PathDir { Directory = x, isSystem = true, Sha1Sum = Sha1SumString($"{x}S") });
 
+                var userPaths0 = RegLib.GetValues(@"HKCU\Environment",
+                                                    RegistryView.Registry64,
+                                                    RegistryValueOptions.DoNotExpandEnvironmentNames)
+                                                    .Where(x => x.key.Equals("Path", StringComparison.OrdinalIgnoreCase))
+                                                    .First().value;
 
-                var userPaths = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User)
+                var userPaths = userPaths0
                     .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(x => new PathDir { Directory = x, isSystem = false, Sha1Sum = Sha1SumString($"{x}U") });
 
@@ -47,7 +58,7 @@ namespace TrieAlgorithm
 
                 foreach (var p in paths)
                 {
-                    Console.WriteLine($"{p.isSystem} {p.Sha1Sum} {p.Prefix} {p.Directory}");
+                    Console.WriteLine($"{p.Prefix,7} {p.Directory}");
                 }
             }
             catch (Exception ex)
